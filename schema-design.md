@@ -9,22 +9,25 @@
 
 ### Table: doctors
 - id: INT, Primary Key, Auto Increment
-- doctor_first_name: VARCHAR
-- doctor_surname: VARCHAR
-- doctor_email: VARCHAR
+- doctor_first_name: VARCHAR(50)
+- doctor_surname: VARCHAR(50)
+- doctor_email: VARCHAR(100)
+- doctor_password: VARCHAR(100)
 - doctor_telno: INT
-- specialism: VARCHAR
+- specialism: VARCHAR(100)
 
 ### Table: patients
 - id: INT, Primary Key, Auto Increment
-- patient_first_name: VARCHAR
-- patient_surname: VARCHAR
-- patient_email: VARCHAR
+- patient_first_name: VARCHAR(5)
+- patient_surname: VARCHAR(50)
+- patient_email: VARCHAR(100)
 - patient_telno: INT
+- patient_password: VARCHAR(100)
 
 ### Table: admin
 - id: INT, Primary Key, Auto Increment
-- admin_email: VARCHAR
+- admin_email: VARCHAR(100)
+- admin_password: VARCHAR(100)
 
 ## MongoDB Collection Design
 
