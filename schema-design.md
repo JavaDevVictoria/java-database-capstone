@@ -12,6 +12,16 @@
 - doctor_first_name: VARCHAR
 - doctor_surname: VARCHAR
 - doctor_email: VARCHAR
+- doctor_telno: INT
 - specialism: VARCHAR
+
+### Table: patients
+- id: INT, Primary Key, Auto Increment
+- patient_first_name: VARCHAR
+- patient_surname: VARCHAR
+- patient_email: VARCHAR
+- patient_telno: INT
+
+### Table: admin
 - 
 ## MongoDB Collection Design
