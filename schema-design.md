@@ -1,33 +1,33 @@
 ## MySQL Database Design
 
 ### Table: appointments
-- id: INT, Primary Key, Auto Increment
-- doctor_id: INT, Foreign Key → doctors(id)
-- patient_id: INT, Foreign Key → patients(id)
+- id: INT, Primary Key, Auto Increment, Not Null
+- doctor_id: INT, Foreign Key → doctors(id), Not Null
+- patient_id: INT, Foreign Key → patients(id), Not Null
 - appointment_time: DATETIME, Not Null
 - status: INT (0 = Scheduled, 1 = Completed, 2 = Cancelled)
 
 ### Table: doctors
-- id: INT, Primary Key, Auto Increment
+- id: INT, Primary Key, Auto Increment, Not Null
 - doctor_first_name: VARCHAR(50)
 - doctor_surname: VARCHAR(50)
-- doctor_email: VARCHAR(100)
-- doctor_password: VARCHAR(100)
+- doctor_email: VARCHAR(100), Not Null
+- doctor_password: VARCHAR(100), Not Null
 - doctor_telno: INT
 - specialism: VARCHAR(100)
 
 ### Table: patients
-- id: INT, Primary Key, Auto Increment
+- id: INT, Primary Key, Auto Increment, Not Null
 - patient_first_name: VARCHAR(5)
 - patient_surname: VARCHAR(50)
-- patient_email: VARCHAR(100)
+- patient_email: VARCHAR(100), Not Null
 - patient_telno: INT
-- patient_password: VARCHAR(100)
+- patient_password: VARCHAR(100), Not Null
 
 ### Table: admin
 - id: INT, Primary Key, Auto Increment
-- admin_email: VARCHAR(100)
-- admin_password: VARCHAR(100)
+- admin_email: VARCHAR(100), Not Null
+- admin_password: VARCHAR(100), Not Null
 
 ## MongoDB Collection Design
 
