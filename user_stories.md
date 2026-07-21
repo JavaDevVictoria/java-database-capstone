@@ -79,4 +79,66 @@ _As an admin user, I want to run a stored procedure in the MySQL CLI so I can ge
 
 ## Patient User Stories
 
+**Title:**
+_As a patient user, I want to view a list of doctors without logging in so I can explore options before registering._
+
+**Acceptance Criteria:**
+1. I am able to view the list of doctors
+2. I can read the profile of each doctor
+
+**Priority:** High
+**Story Points:** [5]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a patient user, I want to sign up using my email and password so I can book appointments._
+
+**Acceptance Criteria:**
+1. I can register a new user account
+2. I can log in to my account
+3. I can book an appointment
+
+**Priority:** High
+**Story Points:** [5]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a patient user, I want to log into the portal so I can manage my bookings._
+
+**Acceptance Criteria:**
+1. I can log in to my account
+2. I can view my existing appointments
+3. I can edit the date and time of my existing bookings
+4. I can cancel my existing bookings
+
+**Priority:** High
+**Story Points:** [5]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a patient user, I want to log out of the portal so I can secure my account._
+
+**Acceptance Criteria:**
+1. There is a logout button on the screen
+2. After clicking on the logout button, I am directed back to the login screen
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a patient user, I want to view my upcoming appointments so that I can prepare accordingly._
+
+**Acceptance Criteria:**
+1. Upon logging in, there is a link to a page listing my upcoming appointments
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
 ## Doctor User Stories
