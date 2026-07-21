@@ -38,6 +38,44 @@ _As an admin user, I want to log out of the portal, so that I can protect system
 **Notes:**
 - [Additional information or edge cases]
 
+**Title:**
+_As an admin user, I want to add doctors to the portal, so they have access to the system._
+
+**Acceptance Criteria:**
+1. There is a form where I can enter the username and email address for each new user
+2. After completing the form, a temporary password is generated for each user and emailed to their email address.
+3. The user is asked to set a permanent password when they log in for the first time.
+
+**Priority:** High
+**Story Points:** [5]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As an admin user, I want to delete doctor's profile from the portal, so their access is revoked when they leave the organisation._
+
+**Acceptance Criteria:**
+1. There is a delete link next to each user entry
+2. A confirmation prompt is displayed after clicking on the delete link
+3. The user's access is revoked upon confirmation
+
+**Priority:** High
+**Story Points:** [5]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As an admin user, I want to run a stored procedure in the MySQL CLI so I can get the number of appointments per month and track usage statistics._
+
+**Acceptance Criteria:**
+1. There stored procedure returns number of appointments per month
+2. Usage statistics are displayed when running the stored procedure
+
+**Priority:** Medium
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
 
 ## Patient User Stories
 
