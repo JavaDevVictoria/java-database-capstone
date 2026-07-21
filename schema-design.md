@@ -29,6 +29,12 @@
 - admin_email: VARCHAR(100), Not Null
 - admin_password: VARCHAR(100), Not Null
 
+What happens if a patient is deleted? Should appointments also be deleted? Yes, it makes sense to delete their appointments.
+Should a doctor be allowed to have overlapping appointments? No.
+Should each doctor have their own available time slots? Yes.
+Should a patient's past appointment history be retained forever? No, it should be deleted after 5 years of them leaving the practice, if they leave. Otherwise, it should be kept permanently.
+Is a prescription tied to a specific appointment or can it exist independently? It can exist independently, as sometimes a patient might ask for an emergency prescription over the phone or at the reception desk, without an official appointment.
+
 ## MongoDB Collection Design
 
 ### Collection: prescriptions
@@ -47,3 +53,5 @@
     "location": "Market Street"
   }
 }
+
+
