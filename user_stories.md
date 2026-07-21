@@ -19,9 +19,9 @@ _As a [user role], I want [feature/goal], so that [reason]._
 _As an admin user, I want to log into the portal with my username and password, so that I can manage the platform securely._
 
 **Acceptance Criteria:**
-1. [Criteria 1]
-2. [Criteria 2]
-3. [Criteria 3]
+1. I am able to create new user accounts
+2. I am able to update my username and password
+3. I am able to disable accounts when users leave the organisation
 
 **Priority:** High
 **Story Points:** [5]
