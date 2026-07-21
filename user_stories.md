@@ -16,14 +16,14 @@ _As a [user role], I want [feature/goal], so that [reason]._
 ## Admin User Stories
 
 **Title:**
-_As an [admin user], I want [to log into the portal with your username and password ], so that [I can manage the platform securely]._
+_As an admin user, I want to log into the portal with my username and password, so that I can manage the platform securely._
 
 **Acceptance Criteria:**
 1. [Criteria 1]
 2. [Criteria 2]
 3. [Criteria 3]
 
-**Priority:** [High]
+**Priority:** High
 **Story Points:** [5]
 **Notes:**
 - [Additional information or edge cases]
