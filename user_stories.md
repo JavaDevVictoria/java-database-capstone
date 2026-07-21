@@ -142,3 +142,60 @@ _As a patient user, I want to view my upcoming appointments so that I can prepar
 - [Additional information or edge cases]
 
 ## Doctor User Stories
+
+**Title:**
+_As a doctor user, I want to view my appointment calendar so I can stay organized._
+
+**Acceptance Criteria:**
+1. Upon logging in, there is a link to a page showing my appointment calendar
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a doctor user, I want to log into the portal so I can manage my appointments._
+
+**Acceptance Criteria:**
+1. Upon logging in, there is a link to a page showing my appointment calendar
+2. Each calendar entry contains a link to manage the appointment (cancel, reschedule)
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a doctor user, I want to log out of the portal so I can protect my data._
+
+**Acceptance Criteria:**
+1. There is a logout button on the screen
+2. After clicking on the logout button, I am directed back to the login screen
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a doctor user, I want to mark my unavailability so I can inform patients of the available slots._
+
+**Acceptance Criteria:**
+1. On the calendar page, there is an option to block out time
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
+
+**Title:**
+_As a doctor user, I want to update my profile with specialization and contact information so that patients have up-to-date information
+
+**Acceptance Criteria:**
+1. Upon logging in, there is a link to a profile page where I can update my information
+
+**Priority:** High
+**Story Points:** [3]
+**Notes:**
+- [Additional information or edge cases]
