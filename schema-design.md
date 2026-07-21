@@ -23,5 +23,24 @@
 - patient_telno: INT
 
 ### Table: admin
-- 
+- id: INT, Primary Key, Auto Increment
+- admin_email: VARCHAR
+
 ## MongoDB Collection Design
+
+### Collection: prescriptions
+
+```json
+{
+  "_id": "ObjectId('64abc123456')",
+  "patientName": "John Smith",
+  "appointmentId": 51,
+  "medication": "Paracetamol",
+  "dosage": "500mg",
+  "doctorNotes": "Take 1 tablet every 6 hours.",
+  "refillCount": 2,
+  "pharmacy": {
+    "name": "Walgreens SF",
+    "location": "Market Street"
+  }
+}
