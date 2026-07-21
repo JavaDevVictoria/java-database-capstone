@@ -15,6 +15,7 @@
 - doctor_password: VARCHAR(100), Not Null
 - doctor_telno: INT
 - specialism: VARCHAR(100)
+- availableTimes: VARCHAR(100)
 
 ### Table: patients
 - id: INT, Primary Key, Auto Increment, Not Null
