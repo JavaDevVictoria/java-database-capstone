@@ -5,7 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-@Document
+@Document(collection = "prescriptions")
 public class Prescription {
 
   // @Document annotation:
