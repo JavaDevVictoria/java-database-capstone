@@ -1,6 +1,6 @@
 package com.project.back_end.models;
 
-import jakarta.persistence.Document;
+import org.springframework.data.mongodb.core.mapping.Document;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
