@@ -1,5 +1,30 @@
 <!-- adminDashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Admin Dashboard</title>
+        <link rel="stylesheet" th:href="@{/assets/css/adminDashboard.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+        <script th:src="@{/js/render.js}" defer></script>
+        <script th:src="@{/js/util.js}" defer></script>
+        <script th:src="@{/js/components/header.js}" defer></script>
+        <script th:src="@{/js/components/footer.js}" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="wrapper">
+                <div id="header"></div>
+                <main class="main-content">
+                    <input type="text" id="searchBar" placeholder="search by doctor name" />
+                    <select>Sort by time</select>
+                    <select>Filter by specialty</select>
+                </main>
+            </div>
+        </div>
+    </body>
 
+</html>
 <!-- 
 Step-by-Step Explanation of `adminDashboard.html`
 This file creates the Admin Dashboard interface for managing doctor-related data 
