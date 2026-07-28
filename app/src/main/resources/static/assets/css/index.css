@@ -1,6 +1,71 @@
-/* this is the style sheet file for index.htlm  */
+/* this is the style sheet file for index.html  */
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* 
+html, body {
+    height: 100%;
+    font-family: Roboto;
+}
+
+.wrapper {
+    min-height: 100vh;
+    display: flex;             /* Activates flexbox */
+    flex-direction: column;    /* Switches layout to a vertical stack */
+}
+
+h2 {
+    font-size: 48px;
+    margin-bottom: 50px;
+    color: #003e3e;
+    font-family: 'Alegreya', 'Roboto', 'sans-serif';
+    font-weight: bold;
+}
+
+button {
+    background-color: #015c5d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 20px;
+    width: 200px;
+    margin-top: 10px;
+    cursor:pointer;
+    font-size: 16px;
+    a:hover {
+        background-color: #A62B1F;
+    }
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 40px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    background-image: url("../images/defineRole/index.png");
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+
+.dashboard-btn {
+    background-color: #015c5d;
+    a:hover {
+        background-color: #003e3e;
+    }
+}
+
+.footer {
+
+}
+
+.header {
+    
+}
+
+
+/*
 **Global Reset (`*`)**
 
 * Remove all default margin and padding.
