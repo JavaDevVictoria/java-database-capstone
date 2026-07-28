@@ -1,5 +1,30 @@
 <!-- doctorDashboard.html -->
-
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>Doctor Dashboard</title>
+        <link rel="icon" type="image/png" th:href="@{/assets/images/logo/logo.png}" />
+        <link rel="stylesheet" th:href="@{/assets/css/adminDashboard.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/doctorDashboard.css}">
+        <link rel="stylesheet" th:href="@{/assets/css/style.css}">
+        <script th:src="@{/js/render.js}" defer></script>
+        <script th:src="@{/js/util.js}" defer></script>
+        <script th:src="@{/js/components/header.js}" defer></script>
+        <script th:src="@{/js/components/footer.js}" defer></script>
+        <script th:src="@{/js/components/patientRows.js}" defer></script>
+        <script th:src="@{/js/components/patientServices.js}" defer></script>
+        <script th:src="@{/js/components/doctorDashboard.js}" defer></script>
+    </head>
+    <body>
+        <div class="container">
+            <div class="wrapper">
+                <div id="header"></div>
+                <input type="text" id="searchBar" />
+            </div>
+        </div>
+    </body>
+</html>
 <!-- 
 Step-by-Step Explanation of `doctorDashboard.html`
 This file defines the Doctor Dashboard interface, allowing doctors to view and manage their patient appointments, search records, and access patient prescriptions.
