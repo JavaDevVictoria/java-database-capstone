@@ -17,11 +17,21 @@
                 <div id="header"></div>
                 <main class="main-content">
                     <input type="text" id="searchBar" placeholder="search by doctor name" />
-                    <select>Sort by time</select>
-                    <select>Filter by specialty</select>
+                    <select name="searchDropdown" id="sortDropdown">
+                        <option value="sort-by-time">Sort by time</option>
+                        <option value="filter-by-specialty">Filter by specialty</option>
+                    </select>
+                    <div id="content"></div>
                 </main>
+                <div id="footer"></div>
             </div>
         </div>
+        <div id="modal" class="modal">
+            <span id="closeModal" class="close">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+        <script type="module" src="../js/services/adminDashboard.js" defer></script>
+        <script type="module" src="../js/components/doctorCard.js" defer></script>
     </body>
 
 </html>
