@@ -16,11 +16,28 @@
         <script th:src="@{/js/components/patientServices.js}" defer></script>
         <script th:src="@{/js/components/doctorDashboard.js}" defer></script>
     </head>
-    <body>
+    <body onload="renderContent()">
         <div class="container">
             <div class="wrapper">
                 <div id="header"></div>
-                <input type="text" id="searchBar" />
+                <div class="main-content">
+                    <input type="text" id="searchBar" class="searchBar" placeholder="Search Bar for custom output" />
+                    <button id="todayButton">Today's Appointments</button>
+                    <label for="otherDates">Other Dates:</label>
+                    <input type="date" id="datePicker" name="datePicker">
+                    <input type="submit">
+                    <table id="patientTable">
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Prescription</th>
+                          </tr>
+                          <tbody id="patientTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="footer"></div>
             </div>
         </div>
     </body>
