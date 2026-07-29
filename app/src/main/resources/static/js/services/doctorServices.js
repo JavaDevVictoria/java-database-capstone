@@ -26,6 +26,100 @@ async function getDoctors() {
     }
 }
 
+async function deleteDoctor(id, token) {
+    try {
+        // 1. Append the ID directly to the API endpoint URL
+        const response = await fetch(`${DOCTOR_API}/${id}`, {
+            method: 'DELETE',
+            headers: { 
+                'Content-Type': 'application/json',
+                // 2. Pass the bearer token for authentication
+                'Authorization': `Bearer ${token}` 
+            },
+        });
+
+        // 3. Check for HTTP errors (e.g., 401 Unauthorized or 404 Not Found)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // 4. Handle the response (DELETE often returns a 204 No Content, check if body exists)
+        const isJson = response.headers.get('content-type')?.includes('application/json');
+        const data = isJson ? await response.json() : { success: true };
+        
+        return data;
+    }
+    catch (error) {
+        console.error(`Failed to delete doctor with ID ${id}:`, error);
+    }
+}
+
+async function saveDoctor(doctor, token) {
+    try {
+        const response = await fetch(DOCTOR_API, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            // 1. Convert your JavaScript object into a JSON string
+            body: JSON.stringify(doctor)
+        });
+
+        // 2. Parse the backend response (usually contains the new item or a message)
+        const responseData = await response.json();
+
+        // 3. Check if the server rejected the creation (e.g., 400 Bad Request, 409 Conflict)
+        if (!response.ok) {
+            return {
+                success: false,
+                message: responseData.message || `Server error: ${response.status}`
+            };
+        }
+
+        // 4. Return your standard success structure
+        return {
+            success: true,
+            message: 'Doctor saved successfully!',
+            data: responseData
+        };
+
+    } catch (error) {
+        // 5. Return the same structure for network/runtime errors
+        return {
+            success: false,
+            message: error.message || 'A network error occurred. Please try again.'
+        };
+    }
+}
+
+async function filterDoctors(name, time, specialty) {
+    try {
+        // If a variable is null/undefined, it falls back to an empty string ''
+        const safeName = name ?? '';
+        const safeTime = time ?? '';
+        const safeSpecialty = specialty ?? '';
+
+        // Note: encodeURIComponent safely handles spaces and symbols
+        const url = `${DOCTOR_API}?name=${encodeURIComponent(safeName)}&time=${encodeURIComponent(safeTime)}&specialty=${encodeURIComponent(safeSpecialty)}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return await response.json();
+    }
+    catch (error) {
+        console.error("Failed to fetch doctors:", error);
+    }
+}
+
+
 
 /*
   Import the base API URL from the config file
