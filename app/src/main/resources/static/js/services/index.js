@@ -19,27 +19,61 @@ window.onload = function () {
     }
 }
 
-async function adminLoginHandler () {
-    // 1. Select the form element
-    const loginForm = document.getElementById('loginForm');
-
-    // 2. Attach the submit event listener
-    loginForm.addEventListener('submit', async function(event) {
-        // Prevent the browser from reloading the page
-        event.preventDefault(); 
-        
-        // 3. Read the values directly from the input elements
+window.adminLoginHandler = async function () {
+    try {
         const username = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-    });
 
-    const admin = { username, password };
- 
+        const admin = { username, password };
+
+        const response = await fetch(ADMIN_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(admin)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            localStorage.setItem('token', result.token);
+            selectRole('admin');
+            window.location.href = '/index.html';
+        } else {
+            alert('❌ Invalid credentials!');
+        }
+    }
+    catch (error) {
+        alert("❌ Failed to Login : ", error);
+        console.log("Error :: loginAdmin :: ", error);
+    }
 }
-  
-// Explicitly attach it to the window object
-window.adminLoginHandler = adminLoginHandler;
-  
+
+window.doctorLoginHandler = async function () {
+    try {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const doctor = { email, password };
+
+        const response = await fetch(DOCTOR_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(doctor)
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            localStorage.setItem('token', result.token);
+            selectRole('doctor');
+            window.location.href = '/index.html';
+        } else {
+            alert('❌ Invalid credentials!');
+        }
+    }
+    catch (error) {
+        alert("❌ Failed to Login : ", error);
+        console.log("Error :: loginDoctor :: ", error);
+    }
+}
 
 
 /*
