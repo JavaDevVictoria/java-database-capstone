@@ -1,3 +1,130 @@
+import { getDoctors } from './services/doctorServices.js';
+import { filterDoctors } from './services/doctorServices.js';
+import { saveDoctor } from './services/doctorServices.js';
+import { openModal } from './components/modals.js';
+import { createDoctorCard } from './components/doctorCard.js';
+
+document.getElementById('addDocBtn').addEventListener('click', () => {
+  openModal('addDoctor');
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadDoctorCards();
+});
+
+function loadDoctorCards() {
+  getDoctors()
+    .then(doctors => {
+      const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = "";
+
+      doctors.forEach(doctor => {
+        const card = createDoctorCard(doctor);
+        contentDiv.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error("Failed to load doctors:", error);
+    });
+}
+
+document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
+document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
+document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
+
+function filterDoctorsOnChange() {
+  const searchBar = document.getElementById("searchBar").value.trim();
+  const filterTime = document.getElementById("filterTime").value;
+  const filterSpecialty = document.getElementById("filterSpecialty").value;
+
+
+  const name = searchBar.length > 0 ? searchBar : null;
+  const time = filterTime.length > 0 ? filterTime : null;
+  const specialty = filterSpecialty.length > 0 ? filterSpecialty : null;
+
+  filterDoctors(name, time, specialty)
+    .then(response => {
+      const doctors = response.doctors;
+      const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = "";
+
+      if (doctors.length > 0) {
+        console.log(doctors);
+        doctors.forEach(doctor => {
+          const card = createDoctorCard(doctor);
+          contentDiv.appendChild(card);
+        });
+      } else {
+        contentDiv.innerHTML = "<p>No doctors found</p>";
+        console.log("No doctors found");
+      }
+    })
+    .catch(error => {
+      console.error("Failed to filter doctors:", error);
+      alert("❌ An error occurred while filtering doctors.");
+    });
+}
+
+function renderDoctorCards(doctors) {
+  const contentDiv = document.getElementById("content");
+  contentDiv.innerHTML = "";
+
+  doctors.forEach(doctor => {
+    const card = createDoctorCard(doctor);
+    contentDiv.appendChild(card);
+  });
+}
+
+async function adminAddDoctor() {
+    // A. Verify that a valid admin login token exists
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert("Authentication failed: No valid admin token found. Please log in.");
+        return;
+    }
+
+    // B. Collect text and dropdown values using your exact element IDs
+    const name = document.getElementById('doctorName').value;
+    const specialty = document.getElementById('specialization').value; 
+    const email = document.getElementById('doctorEmail').value;
+    const password = document.getElementById('doctorPassword').value;
+    const mobileNo = document.getElementById('doctorPhone').value;    
+
+    // C. Collect all checked availability time slots using the name attribute
+    const selectedTimeSlots = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
+        .map(checkbox => checkbox.value);
+
+    // Basic frontend validation to ensure required fields aren't completely empty
+    if (!name || !specialty || !email || !password || !mobileNo) {
+        alert("Please fill out all text fields.");
+        return;
+    }
+
+    // D. Construct the final data payload matching the modal's structure
+    const doctorData = {
+        name,
+        specialty,
+        email,
+        password,
+        mobileNo,
+        availabilityTimes: selectedTimeSlots // Array of strings like: ["09:00-10:00", "11:00-12:00"]
+    };
+
+    // E. Execute the POST request via the imported saveDoctor service
+    const result = await saveDoctor(doctorData, token);
+
+    // F. Handle the structured response
+    if (result && result.success) {
+        alert(result.message);      
+        closeModal();               // Close the modal window CHECK THIS CODE
+        refreshDoctorList();        // Update UI table or list CHECK THIS CODE
+    } else {
+        const errorMessage = result?.message || "Failed to add doctor. Please try again.";
+        alert(errorMessage);
+    }
+}
+
+
 /*
   This script handles the admin dashboard functionality for managing doctors:
   - Loads all doctor cards
