@@ -1,3 +1,47 @@
+import { openModal } from '../components/modals.js';
+import { API_BASE_URL } from '../config/config.js';
+
+const ADMIN_API = API_BASE_URL + '/admin';
+const DOCTOR_API = API_BASE_URL + '/doctor/login';
+
+window.onload = function () {
+    const adminBtn = document.getElementById('adminLogin');
+    const doctorBtn = document.getElementById('doctorLogin');
+    if (adminBtn) {
+        adminBtn.addEventListener('click', () => {
+            openModal('adminLogin');
+        });
+    } 
+    else if (doctorBtn) {
+        doctorBtn.addEventListener('click', () => {
+            openModal('doctorLogin');
+        });
+    }
+}
+
+async function adminLoginHandler () {
+    // 1. Select the form element
+    const loginForm = document.getElementById('loginForm');
+
+    // 2. Attach the submit event listener
+    loginForm.addEventListener('submit', async function(event) {
+        // Prevent the browser from reloading the page
+        event.preventDefault(); 
+        
+        // 3. Read the values directly from the input elements
+        const username = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+    });
+
+    const admin = { username, password };
+ 
+}
+  
+// Explicitly attach it to the window object
+window.adminLoginHandler = adminLoginHandler;
+  
+
+
 /*
   Import the openModal function to handle showing login popups/modals
   Import the base API URL from the config file
