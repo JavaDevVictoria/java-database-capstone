@@ -26,17 +26,17 @@
   
   .modalApp {
     position: fixed;
-  bottom: -100%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 50%;
-  background: #fff;
-  padding: 20px;
-  z-index: 10000;
-  transition: bottom 1.5s ease-in;
-  box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.3);
-  border-radius: 10px 10px 0 0;
-  text-align: center;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    background: #fff;
+    padding: 20px;
+    z-index: 10000;
+    transition: bottom 1.5s ease-in;
+    box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 10px 10px 0 0;
+    text-align: center;
   }
   
   .modalApp.active {
@@ -69,10 +69,8 @@
     color: #fff;
     border: none;
     cursor: pointer;
-    
-  
-    
   }
+
   .confirm-booking:hover {
     filter: brightness(1.2);
     background-color: #1c3745;
