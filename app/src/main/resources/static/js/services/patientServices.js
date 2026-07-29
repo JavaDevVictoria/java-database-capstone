@@ -37,8 +37,6 @@ export async function patientLogin(data) {
     },
     body: JSON.stringify(data)
   });
-
-
 }
 
 // For getting patient data (name ,id , etc ). Used in booking appointments
