@@ -2,17 +2,30 @@ import { API_BASE_URL } from '../config/config.js';
 
 const DOCTOR_API = API_BASE_URL + '/doctor'
 
-function getDoctors() {
+async function getDoctors() {
     try {
         const response = await fetch(DOCTOR_API, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         });
-    }
-    catch {
+
+        // 1. Always check if the server returned a success status (200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // 2. Parse the body as JSON data
+        const doctors = await response.json();
         
+        // 3. Return the data so you can use it outside this function
+        return doctors;
+    }
+    catch (error) {
+        // 4. Handle errors (network failures, 404s, 500s, etc.)
+        console.error("Failed to fetch doctors:", error);
     }
 }
+
 
 /*
   Import the base API URL from the config file
