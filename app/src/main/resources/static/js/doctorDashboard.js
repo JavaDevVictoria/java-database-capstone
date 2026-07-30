@@ -2,8 +2,8 @@ import { getAllAppointments  } from './services/appointmentRecordService.js';
 import { createPatientRow  } from './components/patientRows.js';
 
 const tableBody = document.getElementById("patientTableBody");
-const unformattedSelectedDate = new Date();
-const selectedDate = new Intl.DateTimeFormat('sv-SE').format(unformattedSelectedDate);
+// Initialise the filter variables in the outer scope
+let selectedDate = new Intl.DateTimeFormat('sv-SE').format(new Date()); // Defaults to today's YYYY-MM-DD
 const token = localStorage.getItem("token");
 let patientName = null;
 
@@ -27,6 +27,77 @@ document.getElementById("searchBar").addEventListener("input", async (event) => 
     // C. Call your existing function to refresh the list with the updated filter
     await loadAppointments();
 });
+
+
+
+// 2. "Today's Appointments" Button Listener
+document.getElementById('todayButton').addEventListener('click', async () => {
+    // Reset selectedDate variable to today's YYYY-MM-DD string
+    selectedDate = new Intl.DateTimeFormat('sv-SE').format(new Date());
+    
+    // Update the native calendar UI display to match
+    document.getElementById('datePicker').value = selectedDate;
+    
+    // Refresh the list
+    await loadAppointments();
+});
+
+// 3. Date Picker Change Listener
+document.getElementById('datePicker').addEventListener('change', async (event) => {
+    // Update the selectedDate variable whenever the user changes the calendar field
+    selectedDate = event.target.value;
+    
+    // Refresh the list for the new target date
+    await loadAppointments();
+});
+
+async function loadAppointments() {
+    const tableBody = document.getElementById('appointmentTableBody'); // Make sure your <tbody> has this ID
+    const token = localStorage.getItem('adminToken'); // Grab your auth token
+
+    // 1. Clear any existing content inside the table body right away
+    tableBody.innerHTML = '';
+
+    try {
+        // 2. Fetch data via the service using our current filter values and token
+        const result = await getAllAppointments(selectedDate, patientName, token);
+
+        // 3. Conditional Layout: Check if data exists and contains an array with items
+        if (!result || !result.data || result.data.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="10" style="text-align: center; color: #888;">
+                        No Appointments found for today.
+                    </td>
+                </tr>
+            `;
+            return; // Exit early since there are no rows to render
+        }
+
+        // 4. Loop through existing appointments and append them safely
+        result.data.forEach(appointment => {
+            // Build the row using your custom factory function
+            const rowElement = createPatientRow(appointment);
+            
+            // Append the generated <tr> node directly to the <tbody> container
+            tableBody.appendChild(rowElement);
+        });
+
+    } catch (error) {
+        console.error("Failed to populate appointment list:", error);
+        
+        // 5. Fallback Error UI rendered elegantly inside the table layout
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="10" style="text-align: center; color: #d9534f; font-weight: bold;">
+                    Error loading appointments. Please try reloading the page.
+                </td>
+            </tr>
+        `;
+    }
+}
+
+
 
 /*
   Import getAllAppointments to fetch appointments from the backend
