@@ -99,3 +99,12 @@ export function openModal(type) {
     document.getElementById('doctorLoginBtn').addEventListener('click', doctorLoginHandler);
   }
 }
+
+export function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('modal-body').innerHTML = ''; // Clears the inputs
+}
+
+// Existing span click binding pointing to it
+document.getElementById('closeModal').onclick = closeModal;
+

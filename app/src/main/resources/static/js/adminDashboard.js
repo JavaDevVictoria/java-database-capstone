@@ -1,7 +1,7 @@
 import { getDoctors } from './services/doctorServices.js';
 import { filterDoctors } from './services/doctorServices.js';
 import { saveDoctor } from './services/doctorServices.js';
-import { openModal } from './components/modals.js';
+import { openModal, closeModal } from './components/modals.js';
 import { createDoctorCard } from './components/doctorCard.js';
 
 document.getElementById('addDocBtn').addEventListener('click', () => {
@@ -116,14 +116,14 @@ async function adminAddDoctor() {
     // F. Handle the structured response
     if (result && result.success) {
         alert(result.message);      
-        closeModal();               // Close the modal window CHECK THIS CODE
-        refreshDoctorList();        // Update UI table or list CHECK THIS CODE
+        closeModal();               // Close the modal window
+        // Reload the page to refresh all data seamlessly
+        window.location.reload(); 
     } else {
         const errorMessage = result?.message || "Failed to add doctor. Please try again.";
         alert(errorMessage);
     }
 }
-
 
 /*
   This script handles the admin dashboard functionality for managing doctors:
