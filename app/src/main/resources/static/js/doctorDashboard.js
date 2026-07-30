@@ -1,3 +1,33 @@
+import { getAllAppointments  } from './services/appointmentRecordService.js';
+import { createPatientRow  } from './components/patientRows.js';
+
+const tableBody = document.getElementById("patientTableBody");
+const unformattedSelectedDate = new Date();
+const selectedDate = new Intl.DateTimeFormat('sv-SE').format(unformattedSelectedDate);
+const token = localStorage.getItem("token");
+let patientName = null;
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderContent();
+});
+document.addEventListener("DOMContentLoaded", () => {
+  loadAppointments();
+});
+
+
+// Attach the 'input' event listener to the search bar element
+document.getElementById("searchBar").addEventListener("input", async (event) => {
+    // A. Read the trimmed value from the search input field
+    const searchValue = event.target.value.trim();
+
+    // B. If the input is empty, default to "null", otherwise use the clean text value
+    patientName = searchValue === "" ? "null" : searchValue;
+
+    // C. Call your existing function to refresh the list with the updated filter
+    await loadAppointments();
+});
+
 /*
   Import getAllAppointments to fetch appointments from the backend
   Import createPatientRow to generate a table row for each patient appointment
