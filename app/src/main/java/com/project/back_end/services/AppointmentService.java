@@ -1,10 +1,22 @@
 package com.project.back_end.services;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import com.project.back_end.repo.AppointmentRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
 import com.project.back_end.services.Service;
 import com.project.back_end.services.TokenService;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class AppointmentService {
@@ -139,7 +151,7 @@ public class AppointmentService {
 	//    - It should be annotated with `@Transactional` to ensure the operation is executed in a single transaction.
 	//    - Instruction: Add `@Transactional` before this method to ensure atomicity when updating appointment status.
     @Transactional
-    public void changeStatus(long appointmentId)
+    public void changeStatus(Long appointmentId)
     {
         appointmentRepository.updateStatus(1, appointmentId);
     }
