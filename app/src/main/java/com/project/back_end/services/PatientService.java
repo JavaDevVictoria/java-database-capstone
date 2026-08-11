@@ -36,7 +36,7 @@ public class PatientService {
     public PatientService(PatientRepository patientRepository, TokenService tokenService, AppointmentRepository appointmentRepository) {
 		this.appointmentRepository = appointmentRepository;
         this.tokenService = tokenService;
-        this.doctorRepository = doctorRepository;
+        this.patientRepository = patientRepository;
 	}
 
 	// 3. **createPatient Method**:
