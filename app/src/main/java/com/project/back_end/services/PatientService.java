@@ -116,20 +116,13 @@ public class PatientService {
     public ResponseEntity<Map<String, Object>> filterByDoctor(String name, Long patientId) {
 		try {
 			Map<String, Object> map = new HashMap<>();
-
-			System.out.println("Startingur query");
 			List<Appointment> appointments = appointmentRepository.filterByDoctorNameAndPatientId(name,
 					patientId);
 
-			System.out.println(name);
-			System.out.println(patientId);
-			System.out.println("HI");
-			System.out.println(appointments.size());
 			for (Appointment appointment : appointments) {
 				System.out.println("" + appointment.getDoctor().getName());
 			}
 
-			// TODO: As this converter to DTO is repeated many times, we should extract it to a separate method
 			List<AppointmentDTO> appointmentDTOs = toAppointmentDTOs(appointments);
 
 			map.put("appointments", appointmentDTOs);
