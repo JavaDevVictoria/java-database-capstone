@@ -66,19 +66,7 @@ public class PatientService {
             List<Appointment> appointments = appointmentRepository.findByPatientId(id);
 
             // Convert appointments to DTOs
-            List<AppointmentDTO> appointmentDTOs = appointments.stream()
-                    .map(app -> new AppointmentDTO(
-                            app.getId(),
-                            app.getDoctor().getId(), 
-                            app.getDoctor().getName(),
-                            app.getPatient().getId(),
-                            app.getPatient().getName(),
-                            app.getPatient().getEmail(),
-                            app.getPatient().getPhone(),
-                            app.getPatient().getAddress(),
-                            app.getAppointmentTime(),
-                            app.getStatus()))
-                    .collect(Collectors.toList());
+            List<AppointmentDTO> appointmentDTOs = toAppointmentDTOs(appointments);
 
             map.put("appointments", appointmentDTOs);
             return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -109,19 +97,7 @@ public class PatientService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 
 			}
-			List<AppointmentDTO> appointmentDTOs = appointments.stream()
-					.map(app -> new AppointmentDTO(
-							app.getId(),
-							app.getDoctor().getId(),
-							app.getDoctor().getName(),
-							app.getPatient().getId(),
-							app.getPatient().getName(),
-							app.getPatient().getEmail(),
-							app.getPatient().getPhone(),
-							app.getPatient().getAddress(),
-							app.getAppointmentTime(),
-							app.getStatus()))
-					.collect(Collectors.toList());
+			List<AppointmentDTO> appointmentDTOs = toAppointmentDTOs(appointments);
 
 			map.put("appointments", appointmentDTOs);
 			return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -154,19 +130,7 @@ public class PatientService {
 			}
 
 			// TODO: As this converter to DTO is repeated many times, we should extract it to a separate method
-			List<AppointmentDTO> appointmentDTOs = appointments.stream()
-					.map(app -> new AppointmentDTO(
-							app.getId(),
-							app.getDoctor().getId(), 
-							app.getDoctor().getName(),
-							app.getPatient().getId(),
-							app.getPatient().getName(),
-							app.getPatient().getEmail(),
-							app.getPatient().getPhone(),
-							app.getPatient().getAddress(),
-							app.getAppointmentTime(),
-							app.getStatus()))
-					.collect(Collectors.toList());
+			List<AppointmentDTO> appointmentDTOs = toAppointmentDTOs(appointments);
 
 			map.put("appointments", appointmentDTOs);
 			return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -197,19 +161,7 @@ public class PatientService {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
 
 			}
-			List<AppointmentDTO> appointmentDTOs = appointments.stream()
-					.map(app -> new AppointmentDTO(
-							app.getId(),
-							app.getDoctor().getId(),
-							app.getDoctor().getName(),
-							app.getPatient().getId(),
-							app.getPatient().getName(),
-							app.getPatient().getEmail(),
-							app.getPatient().getPhone(),
-							app.getPatient().getAddress(),
-							app.getAppointmentTime(),
-							app.getStatus()))
-					.collect(Collectors.toList());
+			List<AppointmentDTO> appointmentDTOs = toAppointmentDTOs(appointments);
 
 			map.put("appointments", appointmentDTOs);
 			return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -242,13 +194,29 @@ public class PatientService {
     }
 
 	// 9. **Handling Exceptions and Errors**:
-	//    - The service methods handle exceptions using try-catch blocks and log any issues that occur. If an error occurs during database operations, the service responds with appropriate HTTP status codes (e.g., `500 Internal Server Error`).
+	//    - The service methods handle exceptions using try-catch blocks and log any issues that occur. If an error occurs during database operations, the service responds with appropriate HTTP stat[...]
 	//    - Instruction: Ensure that error handling is consistent across the service, with proper logging and meaningful error messages returned to the client.
 
 	// 10. **Use of DTOs (Data Transfer Objects)**:
-	//    - The service uses `AppointmentDTO` to transfer appointment-related data between layers. This ensures that sensitive or unnecessary data (e.g., password or private patient information) is not exposed in the response.
+	//    - The service uses `AppointmentDTO` to transfer appointment-related data between layers. This ensures that sensitive or unnecessary data (e.g., password or private patient information) is not e[...]
 	//    - Instruction: Ensure that DTOs are used appropriately to limit the exposure of internal data and only send the relevant fields to the client.
 
+	
+	private List<AppointmentDTO> toAppointmentDTOs(List<Appointment> appointments) {
+		return appointments.stream()
+				.map(app -> new AppointmentDTO(
+						app.getId(),
+						app.getDoctor().getId(),
+						app.getDoctor().getName(),
+						app.getPatient().getId(),
+						app.getPatient().getName(),
+						app.getPatient().getEmail(),
+						app.getPatient().getPhone(),
+						app.getPatient().getAddress(),
+						app.getAppointmentTime(),
+						app.getStatus()))
+				.collect(Collectors.toList());
+	}
 
 
 }
