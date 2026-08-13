@@ -116,13 +116,13 @@ public class AppointmentService {
     public ResponseEntity<Map<String, String>> cancelAppointment (Long id, String token) {
         Map<String, String> response = new HashMap<>();
 
-        Optional<Appointment> result = appointmentRepository.findById(appointment.getId());
-        if (!result.isPresent()) {
+        Optional<Appointment> appointment = appointmentRepository.findById(id);
+        if (!appointment.isPresent()) {
             response.put("message", "No appointment with ID: " + appointment.getId());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         } 
         
-        if (result.get().getPatient().getId() != appointment.getPatient().getId()) {
+        if (appointment.get().getPatient().getId() != appointment.getPatient().getId()) {
             response.put("message", "Patient ID Mismatch");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
