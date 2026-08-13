@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.back_end.models.Admin;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.SharedService;
 
 @RestController
 @RequestMapping("${api.path}" + "admin")
@@ -28,9 +28,9 @@ public class AdminController {
 	//    - Use constructor injection to autowire the `Service` class.
 	//    - The service handles core logic related to admin validation and token checking.
 	//    - This promotes cleaner code and separation of concerns between the controller and business logic layer.
-	private final Service service;
+	private final SharedService service;
 
-    public AdminController(Service service) {
+    public AdminController(SharedService service) {
         this.service = service;
     }
 

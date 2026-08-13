@@ -91,9 +91,9 @@ public class TokenService {
         try {
             String extracted = extractEmail(token);
             return switch (user.toLowerCase()) {
-                case "admin"  -> adminRepository.findByUsername(id) != null;
-                case "doctor" -> doctorRepository.findByEmail(id)   != null;
-                case "patient"-> patientRepository.findByEmail(id)  != null;
+                case "admin"  -> adminRepository.findByUsername(extracted) != null;
+                case "doctor" -> doctorRepository.findByEmail(extracted)   != null;
+                case "patient"-> patientRepository.findByEmail(extracted)  != null;
                 default       -> false;
             };
         } catch (Exception e) {

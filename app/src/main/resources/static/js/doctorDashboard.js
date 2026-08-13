@@ -63,7 +63,7 @@ async function loadAppointments() {
         const result = await getAllAppointments(selectedDate, patientName, token);
 
         // 3. Conditional Layout: Check if data exists and contains an array with items
-        if (!result || !result.data || result.data.length === 0) {
+        if (!result || !result.appointments || result.appointments.length === 0) {
             tableBody.innerHTML = `
                 <tr>
                     <td colspan="10" style="text-align: center; color: #888;">
@@ -75,7 +75,7 @@ async function loadAppointments() {
         }
 
         // 4. Loop through existing appointments and append them safely
-        result.data.forEach(appointment => {
+        result.appointments.forEach(appointment => {
             // Build the row using your custom factory function
             const rowElement = createPatientRow(appointment);
             

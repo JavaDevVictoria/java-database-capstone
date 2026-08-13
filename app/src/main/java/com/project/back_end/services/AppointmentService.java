@@ -1,20 +1,26 @@
 package com.project.back_end.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.project.back_end.DTO.AppointmentDTO;
 import com.project.back_end.models.Appointment;
+import com.project.back_end.models.Doctor;
+import com.project.back_end.models.Patient;
 import com.project.back_end.repo.AppointmentRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
-import com.project.back_end.services.Service;
 import com.project.back_end.services.TokenService;
 
 import jakarta.transaction.Transactional;
@@ -32,15 +38,15 @@ public class AppointmentService {
 	//    - Instruction: Ensure constructor injection is used for proper dependency management in Spring.
 
     private final AppointmentRepository appointmentRepository;
-    private final Service service;
+    private final SharedService sharedService;
     private final TokenService tokenService;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
 
 
-	public AppointmentService(AppointmentRepository appointmentRepository, Service service, TokenService tokenService, PatientRepository patientRepository, DoctorRepository doctorRepository) {
+	public AppointmentService(AppointmentRepository appointmentRepository, SharedService sharedService, TokenService tokenService, PatientRepository patientRepository, DoctorRepository doctorRepository) {
 		this.appointmentRepository = appointmentRepository;
-        this.service = service;
+        this.sharedService = sharedService;
         this.tokenService= tokenService;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
@@ -72,7 +78,7 @@ public class AppointmentService {
 	//    - If the update is successful, it saves the appointment; otherwise, it returns an appropriate error message.
 	//    - Instruction: Ensure proper validation and error handling is included for appointment updates.
     @Transactional
-    public ResponseEntity<Map<String, String>> updateAppointment(Appointment appointment) {
+    public ResponseEntity<Map<String, String>> updateAppointment(Appointment appointment, String token) {
         Map<String, String> response = new HashMap<>();
 
         Optional<Appointment> result = appointmentRepository.findById(appointment.getId());
@@ -80,15 +86,40 @@ public class AppointmentService {
             response.put("message", "No appointment with ID: " + appointment.getId());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
+        Appointment existing = result.get();
 
-        if (result.get().getPatient().getId() != appointment.getPatient().getId()) {
+        // Ownership must be established from the token, never from the request body:
+        // both appointment.getId() and appointment.getPatient().getId() are attacker
+        // controlled, so comparing the body against itself is not a real check.
+        Patient caller = patientRepository.findByEmail(tokenService.extractEmail(token));
+        if (caller == null || !caller.getId().equals(existing.getPatient().getId())) {
             response.put("message", "Patient ID Mismatch");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
-        int validated = service.validateAppointment(appointment);
+
+        // Skip availability validation when the requested time matches the persisted
+        // time: the appointment's own pre-update row still occupies that slot, so
+        // getDoctorAvailability would incorrectly report a same-time update as booked.
+        boolean timeChanged = !Objects.equals(existing.getAppointmentTime(), appointment.getAppointmentTime());
+
+        // The doctor must always come from the persisted record, never from the
+        // request body: the body's doctor field is attacker-controlled, and only
+        // `existing` (with its real doctor) is ever saved. Validating against the
+        // body's doctor while saving against `existing`'s doctor would let a caller
+        // pick an unrelated doctor with a free slot to pass validation, then have
+        // the appointment persisted against their real (possibly unavailable)
+        // doctor — bypassing the only scheduling-integrity check in the app.
+        appointment.setDoctor(existing.getDoctor());
+        int validated = timeChanged ? sharedService.validateAppointment(appointment) : 1;
+
         if (validated == 1) {
             try {
-                appointmentRepository.save(appointment);
+                // Copy only the genuinely mutable fields onto the persisted record and
+                // save that, rather than saving the client-supplied entity wholesale,
+                // so the request body cannot reassign patient/doctor on this row.
+                existing.setAppointmentTime(appointment.getAppointmentTime());
+                existing.setStatus(appointment.getStatus());
+                appointmentRepository.save(existing);
                 response.put("message", "Appointment Updated Successfully");
                 return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -117,18 +148,19 @@ public class AppointmentService {
         Map<String, String> response = new HashMap<>();
 
         Optional<Appointment> appointment = appointmentRepository.findById(id);
-        if (!appointment.isPresent()) {
-            response.put("message", "No appointment with ID: " + appointment.getId());
+        if (appointment.isEmpty()) {
+            response.put("message", "No appointment with ID: " + id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        } 
-        
-        if (appointment.get().getPatient().getId() != appointment.getPatient().getId()) {
+        }
+
+        Patient caller = patientRepository.findByEmail(tokenService.extractEmail(token));
+        if (caller == null || !caller.getId().equals(appointment.get().getPatient().getId())) {
             response.put("message", "Patient ID Mismatch");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         try {
-            appointmentRepository.delete(appointment);
+            appointmentRepository.delete(appointment.get());
             response.put("message", "Appointment Deleted Successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -144,8 +176,49 @@ public class AppointmentService {
 	//    - Instruction: Ensure the correct use of transaction boundaries, especially when querying the database for appointments.
     @Transactional
     public Map<String, Object> getAppointment(String pname, LocalDate date, String token) {
-        appointmentRepository.findByDoctorIdAndAppointmentTimeBetween();
+        Map<String, Object> map = new HashMap<>();
+        try {
+            Doctor doctor = doctorRepository.findByEmail(tokenService.extractEmail(token));
+            if (doctor == null) {
+                map.put("error", "Invalid token");
+                map.put("appointments", List.of());
+                return map;
+            }
+
+            LocalDateTime start = date.atStartOfDay();
+            LocalDateTime end   = date.atTime(LocalTime.MAX);
+
+            List<Appointment> appointments;
+            if (pname == null || pname.equals("null") || pname.isBlank()) {
+                appointments = appointmentRepository
+                        .findByDoctorIdAndAppointmentTimeBetween(doctor.getId(), start, end);
+            } else {
+                appointments = appointmentRepository
+                        .findByDoctorIdAndPatient_NameContainingIgnoreCaseAndAppointmentTimeBetween(
+                                doctor.getId(), pname, start, end);
+            }
+
+            map.put("appointments", toAppointmentDTOs(appointments));
+        } catch (Exception e) {
+            System.out.println("Error: " + e);
+            map.put("error", "Internal Server Error");
+        }
+        return map;
     }
+
+	// private copy — intentionally duplicates PatientService.toAppointmentDTOs to keep these two files
+	// independently owned. Do NOT widen or reuse PatientService's private mapper.
+	private List<AppointmentDTO> toAppointmentDTOs(List<Appointment> appointments) {
+		return appointments.stream()
+				.map(app -> new AppointmentDTO(
+						app.getId(),
+						app.getDoctor().getId(), app.getDoctor().getName(),
+						app.getPatient().getId(), app.getPatient().getName(),
+						app.getPatient().getEmail(), app.getPatient().getPhone(),
+						app.getPatient().getAddress(),
+						app.getAppointmentTime(), app.getStatus()))
+				.collect(Collectors.toList());
+	}
 
 	// 8. **Change Status Method**:
 	//    - This method updates the status of an appointment by changing its value in the database.

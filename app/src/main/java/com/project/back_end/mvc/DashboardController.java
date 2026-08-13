@@ -1,24 +1,24 @@
 package com.project.back_end.mvc;
 
-import com.project.back_end.services.Service;
+import com.project.back_end.services.SharedService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
-import java.util.Collection;
 
 @Controller
 public class DashboardController {
 
-    private final Service service;
+    private final SharedService service;
 
-    public DashboardController(Service service) {
+    public DashboardController(SharedService service) {
         this.service = service;
     }
 
     @GetMapping("/adminDashboard/{token}")
     public String adminDashboard(@PathVariable String token) {
-        if (service.validateToken(token, "admin").isEmpty()) {
+        Map<String, String> body = service.validateToken(token, "admin").getBody();
+        if (body == null || body.isEmpty()) {
             return "admin/adminDashboard"; // map empty = valid token
         }
         return "redirect:/"; // map not empty = errors exist
@@ -26,7 +26,8 @@ public class DashboardController {
 
     @GetMapping("/doctorDashboard/{token}")
     public String doctorDashboard(@PathVariable String token) {
-        if (service.validateToken(token, "doctor").isEmpty()) {
+        Map<String, String> body = service.validateToken(token, "doctor").getBody();
+        if (body == null || body.isEmpty()) {
             return "doctor/doctorDashboard"; // map empty = valid token
         }
         return "redirect:/"; // map not empty = errors exist

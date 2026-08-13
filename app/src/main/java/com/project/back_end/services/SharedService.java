@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import com.project.back_end.DTO.Login;
 import com.project.back_end.models.Admin;
@@ -20,7 +21,7 @@ import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
 
 @Service
-public class Service {
+public class SharedService {
 	// 1. **@Service Annotation**
 	// The @Service annotation marks this class as a service component in Spring. This allows Spring to automatically detect it through component scanning
 	// and manage its lifecycle, enabling it to be injected into controllers or other services using @Autowired or constructor injection.
@@ -36,10 +37,11 @@ public class Service {
 	private final DoctorService doctorService;
 	private final PatientService patientService;
 	
-	public Service(TokenService tokenService, AdminRepository adminRepository, DoctorRepository doctorRepository, DoctorService doctorService, PatientService patientService) {
+	public SharedService(TokenService tokenService, AdminRepository adminRepository, DoctorRepository doctorRepository, PatientRepository patientRepository, DoctorService doctorService, PatientService patientService) {
 		this.tokenService = tokenService;
 		this.adminRepository = adminRepository;
 		this.doctorRepository = doctorRepository;
+		this.patientRepository = patientRepository;
 		this.doctorService = doctorService;
 		this.patientService = patientService;
 	}

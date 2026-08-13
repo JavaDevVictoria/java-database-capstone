@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.back_end.models.Prescription;
 import com.project.back_end.services.AppointmentService;
 import com.project.back_end.services.PrescriptionService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.SharedService;
 
 import jakarta.validation.Valid;
 
@@ -34,10 +34,10 @@ public class PrescriptionController {
 	//    - Inject `AppointmentService` to update appointment status after a prescription is issued.
 
 	private final PrescriptionService prescriptionService;
-	private final Service service;
+	private final SharedService service;
 	private final AppointmentService appointmentService;
-	
-	public PrescriptionController(PrescriptionService prescriptionService, Service service, AppointmentService appointmentService) {
+
+	public PrescriptionController(PrescriptionService prescriptionService, SharedService service, AppointmentService appointmentService) {
         this.prescriptionService = prescriptionService;
         this.service = service;
         this.appointmentService = appointmentService;

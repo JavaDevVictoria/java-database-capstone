@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.project.back_end.DTO.Login;
 import com.project.back_end.models.Doctor;
 import com.project.back_end.services.DoctorService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.SharedService;
 
 import jakarta.validation.Valid;
 
@@ -30,9 +30,9 @@ public class DoctorController {
 	//    - Inject `DoctorService` for handling the core logic related to doctors (e.g., CRUD operations, authentication).
 	//    - Inject the shared `Service` class for general-purpose features like token validation and filtering.
 	private final DoctorService doctorService;
-	private final Service service;
-	
-	public DoctorController(DoctorService doctorService, Service service) {
+	private final SharedService service;
+
+	public DoctorController(DoctorService doctorService, SharedService service) {
         this.doctorService = doctorService;
         this.service = service;
     }
@@ -154,7 +154,7 @@ public class DoctorController {
 	//    - Accepts `name`, `time`, and `speciality` as path variables.
 	//    - Calls the shared `Service` to perform filtering logic and returns matching doctors in the response.
 	@GetMapping("/filter/{name}/{time}/{speciality}")
-	public Map<String, Object> filterDoctor(
+	public ResponseEntity<Map<String, Object>> filterDoctor(
 			@PathVariable String name,
 			@PathVariable String time,
 			@PathVariable String speciality) {

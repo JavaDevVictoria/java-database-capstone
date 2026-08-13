@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,30 @@ public class DoctorService {
     //    - Instruction: Ensure that the time slots are properly formatted and the available slots are correctly filtered.
     @Transactional
     public List<String> getDoctorAvailability(Long doctorId, LocalDate date) {
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+        if (doctor.isEmpty() || doctor.get().getAvailableTimes() == null) {
+            return List.of();
+        }
 
+        List<Appointment> booked = appointmentRepository.findByDoctorIdAndAppointmentTimeBetween(
+                doctorId, date.atStartOfDay(), date.atTime(LocalTime.MAX));
+
+        Set<LocalTime> bookedStarts = booked.stream()
+                .map(a -> a.getAppointmentTime().toLocalTime())
+                .collect(Collectors.toSet());
+
+        List<String> available = new ArrayList<>();
+        for (String slot : doctor.get().getAvailableTimes()) {
+            try {
+                LocalTime start = LocalTime.parse(slot.split("-")[0]);
+                if (!bookedStarts.contains(start)) {
+                    available.add(slot);
+                }
+            } catch (Exception e) {
+                // malformed slot: skip, matching the swallow-and-skip style of filterDoctorByTimeAmPm
+            }
+        }
+        return available;
     }
 
     // 5. **saveDoctor Method**:

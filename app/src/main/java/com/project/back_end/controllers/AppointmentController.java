@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.project.back_end.models.Appointment;
 import com.project.back_end.services.AppointmentService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.SharedService;
 
 import jakarta.validation.Valid;
 
@@ -30,10 +30,10 @@ public class AppointmentController {
 	//    - Inject `AppointmentService` for handling the business logic specific to appointments.
 	//    - Inject the general `Service` class, which provides shared functionality like token validation and appointment checks.
 	private final AppointmentService appointmentService;
-    private final Service service;
+    private final SharedService service;
 
-    
-    public AppointmentController(AppointmentService appointmentService, Service service) {
+
+    public AppointmentController(AppointmentService appointmentService, SharedService service) {
         this.appointmentService = appointmentService;
         this.service = service;
     }
@@ -105,7 +105,7 @@ public class AppointmentController {
         if (!tempMap.getBody().isEmpty()) {
             return tempMap;
         }
-        return appointmentService.updateAppointment(appointment);   
+        return appointmentService.updateAppointment(appointment, token);
     }
 
 
