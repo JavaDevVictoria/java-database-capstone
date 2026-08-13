@@ -1,5 +1,16 @@
 package com.project.back_end.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.project.back_end.repo.AdminRepository;
+import com.project.back_end.repo.DoctorRepository;
+import com.project.back_end.repo.PatientRepository;
+
 @Service
 public class Service {
 	// 1. **@Service Annotation**
@@ -30,16 +41,11 @@ public class Service {
 	// If the token is invalid or expired, it returns a 401 Unauthorized response with an appropriate error message. This ensures security by preventing
 	// unauthorized access to protected resources.
 	public ResponseEntity<Map<String, String>> validateToken(String token, String user) {
-		Map<String, Object> map = new HashMap<>();
-		try { 
-			tokenService.validateToken();
-			map.put("message", "Token validated successfully");
-			return ResponseEntity.status(HttpStatus.CREATED).body(map);
-		} catch (Exception e) {
-            System.out.println("Error: " + e);
-            map.put("error", "401 Unauthorized");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(map);
+		Map<String, String> response = new HashMap<>();
+        if (!tokenService.validateToken(token, user)) {
+            response.put("error", "Invalid or expired token");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
 	}
 
 	// 4. **validateAdmin Method**
