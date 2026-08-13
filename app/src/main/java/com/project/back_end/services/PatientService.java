@@ -83,8 +83,8 @@ public class PatientService {
 	//    - Converts the appointments into `AppointmentDTO` and returns them in the response.
 	//    - Instruction: Ensure the method correctly handles "past" and "future" conditions, and that invalid conditions are caught and returned as errors.
 	public ResponseEntity<Map<String, Object>> filterByCondition(String condition, Long id) {
-		try {
-			Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
+        try {
 			List<Appointment> appointments;
 			if (condition.equals("past")) {
 				appointments = appointmentRepository.findByPatient_IdAndStatusOrderByAppointmentTimeAsc(id, 1);
@@ -114,8 +114,8 @@ public class PatientService {
 	//    - Instruction: Ensure that the method correctly filters by doctor's name and patient ID and handles any errors or invalid cases.
 	
     public ResponseEntity<Map<String, Object>> filterByDoctor(String name, Long patientId) {
-		try {
-			Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
+        try {
 			List<Appointment> appointments = appointmentRepository.filterByDoctorNameAndPatientId(name,
 					patientId);
 
@@ -140,8 +140,8 @@ public class PatientService {
 	//    - Converts the appointments into `AppointmentDTO` objects and returns them in the response.
 	//    - Instruction: Ensure that the filter handles both doctor name and condition properly, and catches errors for invalid input.
 	public ResponseEntity<Map<String, Object>> filterByDoctorAndCondition(String condition, String name, long patientId) {
-		try {
-			Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
+        try {
 			List<Appointment> appointments;
 			if (condition.equals("past")) {
 				appointments = appointmentRepository.filterByDoctorNameAndPatientIdAndStatus(name, patientId, 1);
@@ -173,8 +173,8 @@ public class PatientService {
 		//    - Instruction: Make sure that the token extraction process works correctly and patient details are fetched properly based on the extracted email.
 		
 	public ResponseEntity<Map<String,Object>> getPatientDetails(String token) {
-		try {
-			Map<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
+        try {
 			String email = tokenService.extractEmail(token);
 			Patient patient = patientRepository.findByEmail(email);
 			map.put("patient",patient);

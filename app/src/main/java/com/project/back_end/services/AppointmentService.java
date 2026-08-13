@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.project.back_end.models.Appointment;
 import com.project.back_end.repo.AppointmentRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
@@ -60,7 +61,7 @@ public class AppointmentService {
             return 1; // Success code
         } catch (Exception e) {
             // Log the exception details so the root cause is not permanently lost
-            log.error("Failed to save appointment", e);
+            System.out.println("Failed to save appointment " + e);
             return 0; // Error code
         }
     }

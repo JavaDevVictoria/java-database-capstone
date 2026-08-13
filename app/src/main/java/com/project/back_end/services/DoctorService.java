@@ -174,12 +174,12 @@ public class DoctorService {
     //    - The method fetches doctors matching the name and specialty criteria, then filters them based on their availability during the specified time period.
     //    - Instruction: Ensure proper filtering based on both the name and specialty as well as the specified time period.
 	@Transactional
-    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String specialty, String amOrPm) {
+    public Map<String, Object> filterDoctorsByNameSpecialtyAndTime(String name, String specialty, String amOrPm) {
         Map<String, Object> map = new HashMap<>();
 
         List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
 
-        List<Doctor> filteredDoctors = filterDoctorByTime(doctors,amOrPm);
+        List<Doctor> filteredDoctors = filterDoctorByTimeAmPm(doctors,amOrPm);
 
         map.put("doctors", filteredDoctors);
         return map;
@@ -190,10 +190,10 @@ public class DoctorService {
     //    - This method processes a list of doctors and their available times to return those that fit the time criteria.
     //    - Instruction: Ensure that the time filtering logic correctly handles both AM and PM time slots and edge cases.
 	@Transactional
-    public Map<String, Object> filterDoctorsByTime(String amOrPm) {
+    public Map<String, Object> filterDoctorByTime(String amOrPm) {
         Map<String, Object> map = new HashMap<>();
         List<Doctor> doctors = doctorRepository.findAll();
-        List<Doctor> filteredDoctors = filterDoctorByTime(doctors, amOrPm);
+        List<Doctor> filteredDoctors = filterDoctorByTimeAmPm(doctors, amOrPm);
         map.put("doctors", filteredDoctors);
         return map;
     }
@@ -211,13 +211,13 @@ public class DoctorService {
         List<Doctor> doctors = doctorRepository.findByNameLike(name);
 
         // Step 2: Filter by AM/PM
-        List<Doctor> filteredDoctors = filterDoctorByTime(doctors, amOrPm);
+        List<Doctor> filteredDoctors = filterDoctorByTimeAmPm(doctors, amOrPm);
 
         map.put("doctors", filteredDoctors);
         return map;
     }
 	
-	public  List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm)
+	public  List<Doctor> filterDoctorByTimeAmPm(List<Doctor> doctors, String amOrPm)
     {
         return doctors.stream()
         .filter(doctor -> {
@@ -243,9 +243,9 @@ public class DoctorService {
     //    - It ensures that the resulting list of doctors matches both the name (case-insensitive) and the specified specialty.
     //    - Instruction: Ensure that both name and specialty are considered when filtering doctors.
 	@Transactional
-    public Map<String, Object> filterDoctorByNameAndSpecility(String name, String specilty) {
+    public Map<String, Object> filterDoctorByNameAndSpecialty(String name, String specialty) {
         Map<String, Object> map = new HashMap<>();
-        List<Doctor> doctorList = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specilty);
+        List<Doctor> doctorList = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
         doctorList.forEach(doc -> doc.getAvailableTimes().size());
         map.put("doctors", doctorList);
         return map;
@@ -257,10 +257,10 @@ public class DoctorService {
     //    - Fetches doctors based on the specified specialty and filters them based on their available time slots for AM/PM.
     //    - Instruction: Ensure the time filtering is accurately applied based on the given specialty and time period (AM/PM).
 	@Transactional
-    public Map<String, Object> filterDoctorByTimeAndSpecility(String specilty, String amOrPm) {
+    public Map<String, Object> filterDoctorByTimeAndSpecialty(String specialty, String amOrPm) {
         Map<String, Object> map = new HashMap<>();
-        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specilty);
-        List<Doctor> filteredDoctors = filterDoctorByTime(doctors,amOrPm);
+        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
+        List<Doctor> filteredDoctors = filterDoctorByTimeAmPm(doctors, amOrPm);
         map.put("doctors", filteredDoctors);
         return map;
     }
@@ -270,7 +270,7 @@ public class DoctorService {
     //    - This method fetches all doctors matching the specified specialty and returns them.
     //    - Instruction: Make sure the filtering logic works for case-insensitive specialty matching.
 	@Transactional
-    public Map<String, Object> filterDoctorBySpecility(String specilty) {
+    public Map<String, Object> filterDoctorBySpecialty(String specilty) {
         Map<String, Object> map = new HashMap<>();
         List<Doctor> doctorList = doctorRepository.findBySpecialtyIgnoreCase(specilty);
         doctorList.forEach(doc -> doc.getAvailableTimes().size());
@@ -286,29 +286,9 @@ public class DoctorService {
     public Map<String, Object> filterDoctorsByTime(String amOrPm) {
         Map<String, Object> map = new HashMap<>();
         List<Doctor> doctors = doctorRepository.findAll();
-        List<Doctor> filteredDoctors = filterDoctorByTime(doctors,amOrPm);
+        List<Doctor> filteredDoctors = filterDoctorByTimeAmPm(doctors, amOrPm);
         map.put("doctors", filteredDoctors);
         return map;
     }
 	
-	public List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm)
-    {
-        return doctors.stream()
-        .filter(doctor -> {
-            if (amOrPm == null || amOrPm.isBlank())
-                return true;
-
-            boolean isAM = amOrPm.equalsIgnoreCase("am");
-            return doctor.getAvailableTimes().stream().anyMatch(slot -> {
-                try {
-                    String startHourStr = slot.split("-")[0].split(":")[0]; // eg "09"
-                    int hour = Integer.parseInt(startHourStr);
-                    return isAM ? hour < 12 : hour >= 12;
-                } catch (Exception e) {
-                    return false; // Skip invalid time slots
-                }
-            });
-        })
-        .collect(Collectors.toList());
-    } 
 }
