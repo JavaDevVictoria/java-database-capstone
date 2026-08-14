@@ -201,6 +201,39 @@
     color: black;
   }
 
+  /* Reset element-level `button` styles (assets/css/index.css ~L23) that leak
+     onto the accessible close control now used on index.html
+     (<button id="closeModal" class="close">). #closeModal (specificity 1,0,0)
+     beats the bare `button` selector (0,0,1) and layers cleanly on top of
+     .close (0,1,0) for every property both rules set. The id is unique to the
+     close control on all three markup variants (button on index.html, span on
+     adminDashboard.html / patientDashboard.html), so this cannot affect any
+     other button in the app. */
+  #closeModal {
+    background: none;
+    border: none;
+    width: auto;
+    height: auto;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 4px;
+    margin-top: 0;
+    border-radius: 6px;
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #closeModal:hover {
+    color: black;
+  }
+
+  #closeModal:focus-visible {
+    outline: 2px solid #015c5d;
+    outline-offset: 2px;
+  }
+
 
 
   .dashboard-btn{

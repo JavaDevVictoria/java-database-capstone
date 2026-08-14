@@ -11,8 +11,8 @@ window.onload = function () {
         adminBtn.addEventListener('click', () => {
             openModal('adminLogin');
         });
-    } 
-    else if (doctorBtn) {
+    }
+    if (doctorBtn) {
         doctorBtn.addEventListener('click', () => {
             openModal('doctorLogin');
         });
@@ -21,7 +21,7 @@ window.onload = function () {
 
 window.adminLoginHandler = async function () {
     try {
-        const username = document.getElementById('email').value;
+        const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
         const admin = { username, password };
@@ -36,7 +36,6 @@ window.adminLoginHandler = async function () {
             const result = await response.json();
             localStorage.setItem('token', result.token);
             selectRole('admin');
-            window.location.href = '/index.html';
         } else {
             alert('❌ Invalid credentials!');
         }
@@ -64,7 +63,6 @@ window.doctorLoginHandler = async function () {
             const result = await response.json();
             localStorage.setItem('token', result.token);
             selectRole('doctor');
-            window.location.href = '/index.html';
         } else {
             alert('❌ Invalid credentials!');
         }

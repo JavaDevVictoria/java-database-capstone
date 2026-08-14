@@ -12,9 +12,9 @@
         <script th:src="@{/js/util.js}" defer></script>
         <script th:src="@{/js/components/header.js}" defer></script>
         <script th:src="@{/js/components/footer.js}" defer></script>
-        <script th:src="@{/js/components/patientRows.js}" defer></script>
-        <script th:src="@{/js/components/patientServices.js}" defer></script>
-        <script th:src="@{/js/components/doctorDashboard.js}" defer></script>
+        <script type="module" th:src="@{/js/components/patientRows.js}" defer></script>
+        <script type="module" th:src="@{/js/services/patientServices.js}" defer></script>
+        <script type="module" th:src="@{/js/doctorDashboard.js}" defer></script>
     </head>
     <body onload="renderContent()">
         <div class="container">

@@ -4,12 +4,23 @@ import { saveDoctor } from './services/doctorServices.js';
 import { openModal, closeModal } from './components/modals.js';
 import { createDoctorCard } from './components/doctorCard.js';
 
-document.getElementById('addDocBtn').addEventListener('click', () => {
-  openModal('addDoctor');
-});
-
 document.addEventListener("DOMContentLoaded", () => {
+  const addDocBtn = document.getElementById('addDocBtn');
+  if (addDocBtn) {
+    addDocBtn.addEventListener('click', () => {
+      openModal('addDoctor');
+    });
+  }
+
   loadDoctorCards();
+
+  const searchBar = document.getElementById("searchBar");
+  const filterTime = document.getElementById("filterTime");
+  const filterSpecialty = document.getElementById("filterSpecialty");
+
+  if (searchBar) searchBar.addEventListener("input", filterDoctorsOnChange);
+  if (filterTime) filterTime.addEventListener("change", filterDoctorsOnChange);
+  if (filterSpecialty) filterSpecialty.addEventListener("change", filterDoctorsOnChange);
 });
 
 function loadDoctorCards() {
@@ -27,10 +38,6 @@ function loadDoctorCards() {
       console.error("Failed to load doctors:", error);
     });
 }
-
-document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
-document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
-document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
 
 function filterDoctorsOnChange() {
   const searchBar = document.getElementById("searchBar").value.trim();
