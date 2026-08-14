@@ -36,15 +36,30 @@ async function initializePage() {
       document.getElementById("patientName").value = patientName || "You";
       document.getElementById("doctorName").value = doctorName;
       document.getElementById("appointmentDate").value = appointmentDate;
-      document.getElementById("appointmentTime").value = appointmentTime;
 
       const timeSelect = document.getElementById("appointmentTime");
-      doctor.availableTimes.forEach(time => {
+      (doctor.availableTimes || []).forEach(time => {
         const option = document.createElement("option");
         option.value = time;
         option.textContent = time;
         timeSelect.appendChild(option);
       });
+
+      // The URL's appointmentTime comes from the backend's LocalTime
+      // (Jackson serialises it as "HH:mm:ss", e.g. "09:00:00"), but each
+      // <option> value is a range string from doctor.availableTimes
+      // (e.g. "09:00-10:00"). A direct equality assignment never matches,
+      // so the browser silently ignores it and the select falls back to
+      // its first option -- pre-selecting the WRONG slot with no error.
+      // Match on the "HH:mm" prefix (LocalTime always serialises with a
+      // zero-padded 2-digit hour, so a 5-char slice is safe) to find the
+      // range that starts at the booked time. Do not "simplify" this back
+      // to `timeSelect.value = appointmentTime;`.
+      if (appointmentTime) {
+        const prefix = appointmentTime.slice(0, 5); // "09:00:00" -> "09:00"
+        const matchedSlot = (doctor.availableTimes || []).find(t => t.startsWith(prefix));
+        timeSelect.value = matchedSlot || appointmentTime;
+      }
 
       // Handle form submission for updating the appointment
       document.getElementById("updateAppointmentForm").addEventListener("submit", async (e) => {

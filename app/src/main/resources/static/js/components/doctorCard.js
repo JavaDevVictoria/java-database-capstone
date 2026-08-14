@@ -11,11 +11,11 @@ export function createDoctorCard(doctor) {
     const name = document.createElement("h3");
     name.textContent = doctor.name;
     const specialization = document.createElement("h3");
-    specialization.textContent = doctor.specialization;
+    specialization.textContent = doctor.specialty;
     const email = document.createElement("h3");
     email.textContent = doctor.email;
     const availability = document.createElement("h3");
-    availability.textContent = doctor.availability.join(", ");
+    availability.textContent = doctor.availableTimes ? doctor.availableTimes.join(", ") : "";
 
     infoDiv.appendChild(name);
     infoDiv.appendChild(specialization);
@@ -30,10 +30,28 @@ export function createDoctorCard(doctor) {
         removeBtn.textContent = "Delete";
         removeBtn.addEventListener("click", async () => {
             // 1. Confirm deletion
-            // 2. Get token from localStorage
-            // 3. Call API to delete
-            // 4. On success: remove the card from the DOM
-        });   
+            const confirmed = confirm(`Are you sure you want to delete Dr. ${doctor.name}?`);
+            if (!confirmed) {
+                return;
+            }
+            try {
+                // 2. Get token from localStorage
+                const token = localStorage.getItem("token");
+                // 3. Call API to delete
+                const result = await deleteDoctor(doctor.id, token);
+                // 4. On success: remove the card from the DOM
+                if (result && result.success !== false) {
+                    card.remove();
+                    alert("Doctor deleted successfully.");
+                } else {
+                    alert(result && result.message ? result.message : "Failed to delete doctor.");
+                }
+            } catch (error) {
+                console.log("Error deleting doctor:", error);
+                alert("Failed to delete doctor.");
+            }
+        });
+        actionsDiv.appendChild(removeBtn);
     }
     else if (role === "patient") {
         const bookNow = document.createElement("button");
@@ -41,6 +59,7 @@ export function createDoctorCard(doctor) {
         bookNow.addEventListener("click", () => {
             alert("Patient needs to login first.");
         });
+        actionsDiv.appendChild(bookNow);
     }
     else if (role === "loggedPatient") {
         const bookNow = document.createElement("button");
@@ -50,6 +69,7 @@ export function createDoctorCard(doctor) {
             const patientData = await getPatientData(token);
             showBookingOverlay(e, doctor, patientData);
         });
+        actionsDiv.appendChild(bookNow);
     }
 
     card.appendChild(infoDiv);

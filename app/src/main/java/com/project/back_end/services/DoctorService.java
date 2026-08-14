@@ -131,7 +131,11 @@ public class DoctorService {
     @Transactional
     public List<Doctor> getDoctors() {
         List<Doctor> doctors = doctorRepository.findAll();
-        //doctors.forEach(doc -> doc.getAvailableTimes().size());
+        // Force-initialise the LAZY availableTimes collection while the transaction/session
+        // is still open, since spring.jpa.open-in-view=false closes the session before the
+        // controller serialises these doctors to JSON. Without this, touching availableTimes
+        // later throws LazyInitializationException. Do NOT comment this out.
+        doctors.forEach(doc -> { if (doc.getAvailableTimes() != null) doc.getAvailableTimes().size(); });
         return doctors;
     }
 

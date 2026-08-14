@@ -2,7 +2,7 @@ import { API_BASE_URL } from '../config/config.js';
 
 const DOCTOR_API = API_BASE_URL + '/doctor'
 
-async function getDoctors() {
+export async function getDoctors() {
     try {
         const response = await fetch(DOCTOR_API, {
             method: 'GET',
@@ -15,26 +15,26 @@ async function getDoctors() {
         }
 
         // 2. Parse the body as JSON data
-        const doctors = await response.json();
-        
-        // 3. Return the data so you can use it outside this function
-        return doctors;
+        const data = await response.json();
+
+        // 3. Return the inner 'doctors' array so callers can iterate directly
+        return data.doctors;
     }
     catch (error) {
-        // 4. Handle errors (network failures, 404s, 500s, etc.)
+        // 4. Handle errors (network failures, 404s, 500s, etc.) and return a
+        // safe empty array so callers' .forEach()/.find() never throws
         console.error("Failed to fetch doctors:", error);
+        return [];
     }
 }
 
-async function deleteDoctor(id, token) {
+export async function deleteDoctor(id, token) {
     try {
-        // 1. Append the ID directly to the API endpoint URL
-        const response = await fetch(`${DOCTOR_API}/${id}`, {
+        // 1. The backend reads the token as a path variable: /doctor/{id}/{token}
+        const response = await fetch(`${DOCTOR_API}/${id}/${token}`, {
             method: 'DELETE',
-            headers: { 
-                'Content-Type': 'application/json',
-                // 2. Pass the bearer token for authentication
-                'Authorization': `Bearer ${token}` 
+            headers: {
+                'Content-Type': 'application/json'
             },
         });
 
@@ -54,15 +54,15 @@ async function deleteDoctor(id, token) {
     }
 }
 
-async function saveDoctor(doctor, token) {
+export async function saveDoctor(doctor, token) {
     try {
-        const response = await fetch(DOCTOR_API, {
+        // The backend reads the token as a path variable: /doctor/{token}
+        const response = await fetch(`${DOCTOR_API}/${token}`, {
             method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+            headers: {
+                'Content-Type': 'application/json'
             },
-            // 1. Convert your JavaScript object into a JSON string
+            // 1. Convert your JavaScript object into a JSON string, unchanged
             body: JSON.stringify(doctor)
         });
 
@@ -93,15 +93,16 @@ async function saveDoctor(doctor, token) {
     }
 }
 
-async function filterDoctors(name, time, specialty) {
+export async function filterDoctors(name, time, specialty) {
     try {
-        // If a variable is null/undefined, it falls back to an empty string ''
-        const safeName = name ?? '';
-        const safeTime = time ?? '';
-        const safeSpecialty = specialty ?? '';
+        // The backend expects path segments (/doctor/filter/{name}/{time}/{speciality}),
+        // not query params. Missing values use the codebase's "null" sentinel
+        // (see SharedService.filterDoctor and patientServices.js filterAppointments).
+        const safeName = (name === null || name === undefined || name === '') ? 'null' : encodeURIComponent(name);
+        const safeTime = (time === null || time === undefined || time === '') ? 'null' : time;
+        const safeSpecialty = (specialty === null || specialty === undefined || specialty === '') ? 'null' : specialty;
 
-        // Note: encodeURIComponent safely handles spaces and symbols
-        const url = `${DOCTOR_API}?name=${encodeURIComponent(safeName)}&time=${encodeURIComponent(safeTime)}&specialty=${encodeURIComponent(safeSpecialty)}`;
+        const url = `${DOCTOR_API}/filter/${safeName}/${safeTime}/${safeSpecialty}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -112,10 +113,13 @@ async function filterDoctors(name, time, specialty) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
+        // Callers (adminDashboard.js, patientDashboard.js, loggedPatient.js) read
+        // `response.doctors`, so the wrapper shape is preserved here (not unwrapped).
         return await response.json();
     }
     catch (error) {
         console.error("Failed to fetch doctors:", error);
+        return { doctors: [] };
     }
 }
 

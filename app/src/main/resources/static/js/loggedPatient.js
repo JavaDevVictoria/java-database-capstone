@@ -5,9 +5,21 @@ import { filterDoctors } from './services/doctorServices.js';
 import { bookAppointment } from './services/appointmentRecordService.js';
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadDoctorCards();
-});
+// This module is directly <script type="module"> included only on
+// loggedPatientDashboard.html. However, doctorCard.js imports
+// `showBookingOverlay` from this file, and doctorCard.js is also imported by
+// adminDashboard.js and patientDashboard.js — so this file's top-level code
+// now executes on the admin and patient dashboards too, where #searchBar,
+// #filterTime and #filterSpecialty also exist. Guard on the page path so the
+// page-wiring below only runs on the page it was written for; the exports
+// (showBookingOverlay, renderDoctorCards) remain available regardless.
+const isLoggedPatientDashboard = window.location.pathname.endsWith("loggedPatientDashboard.html");
+
+if (isLoggedPatientDashboard) {
+  document.addEventListener("DOMContentLoaded", () => {
+    loadDoctorCards();
+  });
+}
 
 function loadDoctorCards() {
   getDoctors()
@@ -85,9 +97,15 @@ export function showBookingOverlay(e, doctor, patient) {
 }
 
 // Filter Input
-document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
-document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
-document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
+if (isLoggedPatientDashboard) {
+  const searchBar = document.getElementById("searchBar");
+  const filterTime = document.getElementById("filterTime");
+  const filterSpecialty = document.getElementById("filterSpecialty");
+
+  if (searchBar) searchBar.addEventListener("input", filterDoctorsOnChange);
+  if (filterTime) filterTime.addEventListener("change", filterDoctorsOnChange);
+  if (filterSpecialty) filterSpecialty.addEventListener("change", filterDoctorsOnChange);
+}
 
 
 

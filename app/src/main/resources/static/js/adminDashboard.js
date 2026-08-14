@@ -95,26 +95,26 @@ async function adminAddDoctor() {
     const specialty = document.getElementById('specialization').value; 
     const email = document.getElementById('doctorEmail').value;
     const password = document.getElementById('doctorPassword').value;
-    const mobileNo = document.getElementById('doctorPhone').value;    
+    const phone = document.getElementById('doctorPhone').value;
 
     // C. Collect all checked availability time slots using the name attribute
     const selectedTimeSlots = Array.from(document.querySelectorAll('input[name="availability"]:checked'))
         .map(checkbox => checkbox.value);
 
     // Basic frontend validation to ensure required fields aren't completely empty
-    if (!name || !specialty || !email || !password || !mobileNo) {
+    if (!name || !specialty || !email || !password || !phone) {
         alert("Please fill out all text fields.");
         return;
     }
 
-    // D. Construct the final data payload matching the modal's structure
+    // D. Construct the final data payload matching the backend Doctor model's field names
     const doctorData = {
         name,
         specialty,
         email,
         password,
-        mobileNo,
-        availabilityTimes: selectedTimeSlots // Array of strings like: ["09:00-10:00", "11:00-12:00"]
+        phone,
+        availableTimes: selectedTimeSlots // Array of strings like: ["09:00-10:00", "11:00-12:00"]
     };
 
     // E. Execute the POST request via the imported saveDoctor service
@@ -131,6 +131,14 @@ async function adminAddDoctor() {
         alert(errorMessage);
     }
 }
+
+// modals.js wires the Add Doctor modal's Save button by resolving
+// `adminAddDoctor` as a global (saveDoctorBtn.addEventListener('click', adminAddDoctor)).
+// This file loads as type="module", so module-scoped functions are not placed
+// on `window` automatically. Bridge it explicitly, matching the convention
+// already used in this codebase (window.openModal, window.closeModal,
+// window.signupPatient, window.loginPatient, window.adminLoginHandler).
+window.adminAddDoctor = adminAddDoctor;
 
 /*
   This script handles the admin dashboard functionality for managing doctors:

@@ -99,7 +99,28 @@ public class SharedService {
 	public Map<String, Object> filterDoctor(String name, String specialty, String time) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			return doctorService.filterDoctorsByNameSpecialtyAndTime(name, specialty, time);
+			boolean hasName = name != null && !name.equals("null") && !name.isBlank();
+			boolean hasSpecialty = specialty != null && !specialty.equals("null") && !specialty.isBlank();
+			boolean hasTime = time != null && !time.equals("null") && !time.isBlank();
+
+			if (hasName && hasSpecialty && hasTime) {
+				return doctorService.filterDoctorsByNameSpecialtyAndTime(name, specialty, time);
+			} else if (hasName && hasSpecialty) {
+				return doctorService.filterDoctorByNameAndSpecialty(name, specialty);
+			} else if (hasName && hasTime) {
+				return doctorService.filterDoctorByNameAndTime(name, time);
+			} else if (hasSpecialty && hasTime) {
+				return doctorService.filterDoctorByTimeAndSpecialty(specialty, time);
+			} else if (hasName) {
+				return doctorService.findDoctorByName(name);
+			} else if (hasSpecialty) {
+				return doctorService.filterDoctorBySpecialty(specialty);
+			} else if (hasTime) {
+				return doctorService.filterDoctorsByTime(time);
+			} else {
+				result.put("doctors", doctorService.getDoctors());
+				return result;
+			}
 		} catch (Exception e) {
 			result.put("error", "Failed to filter doctors");
 			return result;

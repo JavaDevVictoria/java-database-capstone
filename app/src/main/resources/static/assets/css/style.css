@@ -314,13 +314,13 @@
   }
   
   .card-actions {
-    background-color: #e28282;
+    background-color: #b91c1c;
     padding: 10px;
     text-align: center;
   }
 
   .card-actions:hover {
-    background-color: #d26969;
+    background-color: #991b1b;
   }
   
   .card-actions button {

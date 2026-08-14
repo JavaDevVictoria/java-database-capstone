@@ -68,11 +68,9 @@ td, th {
     border-bottom: 1px solid #ddd;
 }
 
-tbody tr {
-    tr:nth-child(even) {background-color: #f9f9f959;}
-    tr:nth-child(odd) {background-color: #ffffffc0;}
-    tr:hover {background-color: #015c5d39;}
-}
+tbody tr:nth-child(even) {background-color: #f9f9f9;}
+tbody tr:nth-child(odd) {background-color: #ffffff;}
+tbody tr:hover {background-color: #d6ecec;}
 
 .prescription-btn {
     width: 30px;
@@ -89,6 +87,68 @@ tbody tr {
 /* Click/Active State: Shrink slightly */
 .prescription-btn:active {
     transform: scale(0.95);
+}
+
+/* Scoped styling for the accessible patient-id button (js/components/patientRows.js)
+   that replaced the non-interactive <td> text with a real <button> for keyboard
+   operability (WCAG 2.1.1). The class selector (specificity 0,1,0) beats the bare
+   `button` element rule above and the one in adminDashboard.css (specificity 0,0,1
+   each), so it is not forced into the 200px teal block; it stays sized/positioned
+   like the plain text it replaced. */
+.patient-id-btn {
+    background: transparent;
+    border: none;
+    width: auto;
+    padding: 0;
+    margin-top: 0;
+    font: inherit;
+    color: #015c5d;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.patient-id-btn:hover {
+    color: #003e3e;
+}
+
+.patient-id-btn:focus-visible {
+    outline: 2px solid #015c5d;
+    outline-offset: 2px;
+}
+
+/* Scoped styling for the accessible prescription button (js/components/patientRows.js),
+   which now wraps the existing prescription icon in a real <button> for keyboard
+   operability (WCAG 2.1.1). `button.prescription-btn` (specificity 0,1,1) is more
+   specific than the bare `button` rule above/in adminDashboard.css (0,0,1) AND the
+   plain `.prescription-btn` rule above (0,1,0) that still sizes the bare <img> used
+   elsewhere (js/components/appointmentRow.js, patientRecordRow.js,
+   js/patientAppointment.js) — so this override applies only when the class sits on an
+   actual <button> and those other pages/usages are unaffected. The existing
+   `.prescription-btn:hover` / `:active` transform+filter rules above still match this
+   button (it keeps the class) and continue to provide the click/hover feedback, so
+   they are intentionally not duplicated here. */
+button.prescription-btn {
+    background: transparent;
+    border: none;
+    width: auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 6px;
+    margin-top: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button.prescription-btn img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+button.prescription-btn:focus-visible {
+    outline: 2px solid #015c5d;
+    outline-offset: 2px;
 }
 
 .noPatientRecord {
@@ -143,9 +203,9 @@ tbody tr {
 
 * Alternate row colors for better readability:
 
-  * Even rows: semi-transparent light grey (`#f9f9f959`).
-  * Odd rows: soft white background (`#ffffffc0`).
-* On hover: highlight row with a light teal overlay (`#015c5d39`).
+  * Even rows: opaque near-white light grey (`#f9f9f9`).
+  * Odd rows: opaque white background (`#ffffff`).
+* On hover: highlight row with an opaque light teal (`#d6ecec`).
 
 **Prescription Button (`.prescription-btn`)**
 

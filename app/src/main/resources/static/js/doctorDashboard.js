@@ -52,8 +52,7 @@ document.getElementById('datePicker').addEventListener('change', async (event) =
 });
 
 async function loadAppointments() {
-    const tableBody = document.getElementById('appointmentTableBody'); // Make sure your <tbody> has this ID
-    const token = localStorage.getItem('adminToken'); // Grab your auth token
+    const token = localStorage.getItem('token'); // Read fresh each call in case the token changes between calls
 
     // 1. Clear any existing content inside the table body right away
     tableBody.innerHTML = '';
@@ -77,7 +76,7 @@ async function loadAppointments() {
         // 4. Loop through existing appointments and append them safely
         result.appointments.forEach(appointment => {
             // Build the row using your custom factory function
-            const rowElement = createPatientRow(appointment);
+            const rowElement = createPatientRow(appointment, appointment.id, appointment.doctorId);
             
             // Append the generated <tr> node directly to the <tbody> container
             tableBody.appendChild(rowElement);
