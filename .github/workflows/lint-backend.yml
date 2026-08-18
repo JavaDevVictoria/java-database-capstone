@@ -19,4 +19,6 @@ jobs:
         run: curl -L -o checkstyle.jar https://github.com/checkstyle/checkstyle/releases/download/checkstyle-10.12.1/checkstyle-10.12.1-all.jar
 
       - name: Run Checkstyle 
-        run: | java -jar checkstyle.jar -c /google_checks.xml app/src/main/java/com/project/back_end || true
+        run: |
+          java -jar checkstyle.jar -c /google_checks.xml app/src/main/java/com/project/back_end || true
+        
